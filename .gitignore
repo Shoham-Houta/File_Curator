@@ -22,3 +22,6 @@ dist/
 *.log
 *.sqlite3
 data/watch_folder/
+/data/documents/
+/data/downloads/
+/data/images/

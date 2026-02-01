@@ -23,25 +23,29 @@ class FileChangeHandler(FileSystemEventHandler):
 
     def process_event(self, event: FileSystemEvent) -> None:
         path = event.src_path
-        file_description = magic.Magic().from_file(path)
-
-        if path in self.debounce_timers:
-            del self.debounce_timers[path]
-
+        try:
+            file_description = magic.Magic().from_file(path)
+        except FileNotFoundError:
+            print(f"File not found: {path}")
+            return
+        
         if event.event_type == "created":
             print(f"File Created: {event.src_path}")
         elif event.event_type == "modified":
             print(f"File Modified: {event.src_path}")
 
         print(f"File Type: {file_description}")
+        if path in self.debounce_timers:
+            del self.debounce_timers[path]
 
 
-def start_watcher(path_to_watch: str):
+def start_watcher(paths_to_watch: list[str]):
     event_handler = FileChangeHandler()
     observer = Observer()
-    observer.schedule(event_handler, path_to_watch, recursive=True)
+    for path_to_watch in paths_to_watch:
+        observer.schedule(event_handler, path_to_watch, recursive=True)
+        print(f"Watching for file changes in '{path_to_watch}' ...")
     observer.start()
-    print(f"Watching for file changes in '{path_to_watch}' ...")
     try:
         while True:
             time.sleep(1)
@@ -52,5 +56,4 @@ def start_watcher(path_to_watch: str):
 
 
 if __name__ == "__main__":
-    watch_path = "./data/watch_folder"
-    start_watcher(watch_path)
+    start_watcher(["./data/watch_folder", "./data/documents", "./data/downloads", "./data/images"])
