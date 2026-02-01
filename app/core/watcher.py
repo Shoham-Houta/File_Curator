@@ -12,7 +12,6 @@ class FileChangeHandler(FileSystemEventHandler):
 
     def on_any_event(self, event: FileSystemEvent) -> None:
         if event.is_directory:
-            print(event.event_type)
             return
 
         path = event.src_path
