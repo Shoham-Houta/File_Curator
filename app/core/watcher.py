@@ -1,0 +1,57 @@
+import time
+import magic
+from watchdog.events import FileSystemEventHandler, FileSystemEvent
+from watchdog.observers import Observer
+from threading import Timer
+
+
+class FileChangeHandler(FileSystemEventHandler):
+    def __init__(self, debounce_interval=1.0):
+        self.debounce_interval = debounce_interval
+        self.debounce_timers = {}
+
+    def on_any_event(self, event: FileSystemEvent) -> None:
+        if event.is_directory:
+            print(event.event_type)
+            return
+
+        path = event.src_path
+        if path in self.debounce_timers:
+            self.debounce_timers[path].cancel()
+        timer = Timer(self.debounce_interval,self.process_event, args=(event,))
+        self.debounce_timers[path] = timer
+        timer.start()
+
+    def process_event(self, event: FileSystemEvent) -> None:
+        path = event.src_path
+        file_description = magic.Magic().from_file(path)
+
+        if path in self.debounce_timers:
+            del self.debounce_timers[path]
+
+        if event.event_type == "created":
+            print(f"File Created: {event.src_path}")
+        elif event.event_type == "modified":
+            print(f"File Modified: {event.src_path}")
+
+        print(f"File Type: {file_description}")
+
+
+def start_watcher(path_to_watch: str):
+    event_handler = FileChangeHandler()
+    observer = Observer()
+    observer.schedule(event_handler, path_to_watch, recursive=True)
+    observer.start()
+    print(f"Watching for file changes in '{path_to_watch}' ...")
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        print("Stopping watcher...")
+        observer.stop()
+    observer.join()
+
+
+if __name__ == "__main__":
+    watch_path = "./data/watch_folder"
+    start_watcher(watch_path)
