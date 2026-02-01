@@ -1,2 +1,24 @@
-.idea/*
+.idea/
+Logs/
 .DS_Store
+.gemini/
+gha-creds-*.json
+
+# Python bytecode and compilation artifacts
+*.pyc
+__pycache__/
+.pytest_cache/
+.coverage
+.mypy_cache/
+
+# Virtual environments and build artifacts
+.conda/
+.venv/
+*.egg-info/
+build/
+dist/
+
+# Logs and data
+*.log
+*.sqlite3
+data/watch_folder/
