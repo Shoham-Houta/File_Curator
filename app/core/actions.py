@@ -12,8 +12,11 @@ def create_directory(dest_path: str) -> dict:
         "message": f"{dest_path} was created.",
     }
 
-
+#######################################
+# TODO: Complete the logic
+#######################################
 def delete_file(dest_path: str) -> dict:
+
     return {
         "action_type": "Delete",
         "status": "",
@@ -64,7 +67,9 @@ def move_file(src_path: str, dest_path: str) -> dict:
             "message": f"Something went wrong while moving {src_path} -> {dest_path}.",
         }
 
-
+#######################################
+# TODO: Complete the logic
+#######################################
 def copy_file(src_path: str, dest_path: str) -> dict:
     return {
         "action_type": "Copy",
