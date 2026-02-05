@@ -3,7 +3,7 @@ Logs/
 .DS_Store
 .gemini/
 gha-creds-*.json
-
+TODO.md
 # Python bytecode and compilation artifacts
 *.pyc
 __pycache__/
@@ -25,3 +25,4 @@ data/watch_folder/
 /data/documents/
 /data/downloads/
 /data/images/
+/.github/
